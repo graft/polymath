@@ -1,17 +1,9 @@
 #!/usr/bin/env ruby
 #
-require 'nokogiri'
-require 'open-uri'
+require_relative 'ft_scraper'
 
-if ARGV.length < 2
-  puts "Usage: make-crossword <date> <pdf>"
-  exit
-end
-
-date = ARGV[0]
-
-pdf = ARGV[1]
-
+link = FtScraper.new.most_recent_crossword_link
+date = Date.today.to_s
 # first convert it to a png
 
 system "convert -density 150 #{pdf} polymath-#{date}.png"
