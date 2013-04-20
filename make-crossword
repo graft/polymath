@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+#
+require 'nokogiri'
+require 'open-uri'
+
+if ARGV.length < 2
+  puts "Usage: make-crossword <date> <pdf>"
+  exit
+end
+
+date = ARGV[0]
+
+pdf = ARGV[1]
+
+# first convert it to a png
+
+system "convert -density 150 #{pdf} polymath-#{date}.png"
+
+# now load the template
+
+template = File.read "crossword-template.svg"
+template.sub! %r!dec-22!, "#{date}"
+
+svg = "crossword-#{date}.svg"
+
+File.open svg, "w" do |f|
+  f.puts template
+end
+
+system "chown :crosswords #{svg}"
