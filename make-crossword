@@ -4,19 +4,23 @@ require_relative 'ft_scraper'
 
 link = FtScraper.new.most_recent_crossword_link
 date = Date.today.to_s
-# first convert it to a png
+pdf = "/tmp/crossword-#{date}.pdf"
 
+puts "Retrieving PDF."
+system "wget -O #{pdf} #{link}"
+
+puts "Converting PDF to PNG."
 system "convert -density 150 #{pdf} polymath-#{date}.png"
 
 # now load the template
-
+puts "Creating crossword SVG from template."
 template = File.read "crossword-template.svg"
 template.sub! %r!dec-22!, "#{date}"
-
 svg = "crossword-#{date}.svg"
-
 File.open svg, "w" do |f|
   f.puts template
 end
 
 system "chown :crosswords #{svg}"
+
+puts "Done."
